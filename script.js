@@ -1,11 +1,10 @@
 // Função para remover acentos e converter para minúsculas
 function normalizeString(str) {
-    return str
-      .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
-      .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
-      .toLowerCase(); // Converte para minúsculas
-  }
-
+  return str
+    .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
+    .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+    .toLowerCase(); // Converte para minúsculas
+}
 // Dados do arquivo fornecido
 const data = [
     { dn: "1945", cidade: "Arapiraca", estado: "ALAGOAS", concessionaria: "NOVO MUNDO", endereco: "Rod. AL 110, 189A, Canafístula", cep: "57302-045", telefone: "(82) 3482-5200", email: "nmundo@nmundo.com.br" },
@@ -140,16 +139,15 @@ const data = [
     // Adicione todos os outros registros aqui...
 ]
 
-
-// Função para buscar por DN, Estado ou Cidade
-function search() {
-    const input = document.getElementById("dnInput").value.trim();
+  // Função para buscar por DN, Cidade, Estado ou Concessionária
+  function search() {
+    const input = document.getElementById("searchInput").value.trim();
     const normalizedInput = normalizeString(input); // Normaliza a entrada
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = ""; // Limpa resultados anteriores
   
     if (!input) {
-      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN, Estado ou Cidade.</p>`;
+      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN, Cidade, Estado ou Concessionária.</p>`;
       return;
     }
   
@@ -165,11 +163,12 @@ function search() {
         foundItems.push(found);
       }
     } else {
-      // Busca por Estado ou Cidade (case-insensitive e sem acentos)
+      // Busca por Cidade, Estado ou Concessionária (case-insensitive e sem acentos)
       foundItems = data.filter(
         item =>
           normalizeString(item.estado).includes(normalizedInput) ||
-          normalizeString(item.cidade).includes(normalizedInput)
+          normalizeString(item.cidade).includes(normalizedInput) ||
+          normalizeString(item.concessionaria).includes(normalizedInput)
       );
     }
   
@@ -178,6 +177,7 @@ function search() {
       foundItems.forEach(found => {
         resultDiv.innerHTML += `
           <div class="result-item">
+            <p><strong>DN:</strong> ${found.dn}</p>
             <p><strong>Cidade:</strong> ${found.cidade}</p>
             <p><strong>Estado:</strong> ${found.estado}</p>
             <p><strong>Concessionária:</strong> ${found.concessionaria}</p>
@@ -194,7 +194,7 @@ function search() {
     }
   }
   
-  // Função para sugerir nomes de estados, cidades ou concessionárias enquanto o usuário digita
+  // Função para sugerir nomes de concessionárias, cidades ou estados enquanto o usuário digita
   function suggest(input) {
     const suggestionsDiv = document.getElementById("suggestions");
     suggestionsDiv.innerHTML = ""; // Limpa sugestões anteriores
@@ -205,26 +205,45 @@ function search() {
     }
   
     const normalizedInput = normalizeString(input); // Normaliza a entrada
+  
+    // Prioriza sugestões de concessionárias, depois cidades e estados
     const filteredSuggestions = data
       .filter(
         item =>
-          normalizeString(item.estado).startsWith(normalizedInput) ||
+          normalizeString(item.concessionaria).startsWith(normalizedInput) ||
           normalizeString(item.cidade).startsWith(normalizedInput) ||
-          normalizeString(item.concessionaria).startsWith(normalizedInput)
+          normalizeString(item.estado).startsWith(normalizedInput)
       )
-      .map(item => item.estado || item.cidade || item.concessionaria);
+      .map(item => ({
+        concessionaria: item.concessionaria,
+        cidade: item.cidade,
+        estado: item.estado
+      }));
   
     if (filteredSuggestions.length > 0) {
       suggestionsDiv.style.display = "block";
+  
+      // Ordena as sugestões para priorizar concessionárias
+      filteredSuggestions.sort((a, b) => {
+        if (normalizeString(a.concessionaria).startsWith(normalizedInput)) return -1;
+        if (normalizeString(b.concessionaria).startsWith(normalizedInput)) return 1;
+        return 0;
+      });
+  
       filteredSuggestions.forEach(suggestion => {
         const suggestionItem = document.createElement("div");
         suggestionItem.className = "suggestion-item";
-        suggestionItem.textContent = suggestion;
+  
+        // Exibe o nome da concessionária como sugestão principal
+        suggestionItem.textContent = suggestion.concessionaria;
+  
+        // Ao clicar na sugestão, preenche o campo de busca e executa a pesquisa
         suggestionItem.onclick = () => {
-          document.getElementById("dnInput").value = suggestion;
+          document.getElementById("searchInput").value = suggestion.concessionaria;
           suggestionsDiv.style.display = "none";
           search();
         };
+  
         suggestionsDiv.appendChild(suggestionItem);
       });
     } else {
@@ -236,14 +255,14 @@ function search() {
   document.getElementById("searchButton").addEventListener("click", search);
   
   // Evento de pressionar "Enter" no campo de entrada
-  document.getElementById("dnInput").addEventListener("keypress", (event) => {
+  document.getElementById("searchInput").addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
       search();
     }
   });
   
   // Evento de entrada no campo de texto para exibir sugestões
-  document.getElementById("dnInput").addEventListener("input", (event) => {
+  document.getElementById("searchInput").addEventListener("input", (event) => {
     const inputValue = event.target.value.trim();
     suggest(inputValue);
   });
@@ -251,7 +270,7 @@ function search() {
   // Esconde as sugestões ao clicar fora do campo de entrada
   document.addEventListener("click", (event) => {
     const suggestionsDiv = document.getElementById("suggestions");
-    if (!event.target.closest("#dnInput")) {
+    if (!event.target.closest("#searchInput")) {
       suggestionsDiv.style.display = "none";
     }
   });
