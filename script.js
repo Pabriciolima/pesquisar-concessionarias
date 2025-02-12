@@ -1,3 +1,11 @@
+// Função para remover acentos e converter para minúsculas
+function normalizeString(str) {
+    return str
+      .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
+      .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+      .toLowerCase(); // Converte para minúsculas
+  }
+
 // Dados do arquivo fornecido
 const data = [
     { dn: "1945", cidade: "Arapiraca", estado: "ALAGOAS", concessionaria: "NOVO MUNDO", endereco: "Rod. AL 110, 189A, Canafístula", cep: "57302-045", telefone: "(82) 3482-5200", email: "nmundo@nmundo.com.br" },
@@ -135,7 +143,8 @@ const data = [
 
 // Função para buscar por DN, Estado ou Cidade
 function search() {
-    const input = document.getElementById("dnInput").value.trim().toLowerCase();
+    const input = document.getElementById("dnInput").value.trim();
+    const normalizedInput = normalizeString(input); // Normaliza a entrada
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = ""; // Limpa resultados anteriores
   
@@ -156,11 +165,11 @@ function search() {
         foundItems.push(found);
       }
     } else {
-      // Busca por Estado ou Cidade (case-insensitive)
+      // Busca por Estado ou Cidade (case-insensitive e sem acentos)
       foundItems = data.filter(
         item =>
-          item.estado.toLowerCase().includes(input) ||
-          item.cidade.toLowerCase().includes(input)
+          normalizeString(item.estado).includes(normalizedInput) ||
+          normalizeString(item.cidade).includes(normalizedInput)
       );
     }
   
@@ -195,12 +204,13 @@ function search() {
       return;
     }
   
+    const normalizedInput = normalizeString(input); // Normaliza a entrada
     const filteredSuggestions = data
       .filter(
         item =>
-          item.estado.toLowerCase().startsWith(input.toLowerCase()) ||
-          item.cidade.toLowerCase().startsWith(input.toLowerCase()) ||
-          item.concessionaria.toLowerCase().startsWith(input.toLowerCase())
+          normalizeString(item.estado).startsWith(normalizedInput) ||
+          normalizeString(item.cidade).startsWith(normalizedInput) ||
+          normalizeString(item.concessionaria).startsWith(normalizedInput)
       )
       .map(item => item.estado || item.cidade || item.concessionaria);
   
