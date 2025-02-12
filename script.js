@@ -133,15 +133,14 @@ const data = [
 ]
 
 
-// Função para buscar o DN
-// Função para buscar o DN ou Concessionária
+// Função para buscar por DN, Estado ou Cidade
 function search() {
     const input = document.getElementById("dnInput").value.trim().toLowerCase();
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = ""; // Limpa resultados anteriores
   
     if (!input) {
-      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN ou o nome de uma concessionária.</p>`;
+      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN, Estado ou Cidade.</p>`;
       return;
     }
   
@@ -157,9 +156,11 @@ function search() {
         foundItems.push(found);
       }
     } else {
-      // Busca pela concessionária (case-insensitive)
-      foundItems = data.filter(item =>
-        item.concessionaria.toLowerCase().includes(input)
+      // Busca por Estado ou Cidade (case-insensitive)
+      foundItems = data.filter(
+        item =>
+          item.estado.toLowerCase().includes(input) ||
+          item.cidade.toLowerCase().includes(input)
       );
     }
   
@@ -184,8 +185,8 @@ function search() {
     }
   }
   
-  // Função para sugerir nomes de concessionárias enquanto o usuário digita
-  function suggestConcessionarias(input) {
+  // Função para sugerir nomes de estados, cidades ou concessionárias enquanto o usuário digita
+  function suggest(input) {
     const suggestionsDiv = document.getElementById("suggestions");
     suggestionsDiv.innerHTML = ""; // Limpa sugestões anteriores
   
@@ -195,8 +196,13 @@ function search() {
     }
   
     const filteredSuggestions = data
-      .filter(item => item.concessionaria.toLowerCase().startsWith(input.toLowerCase()))
-      .map(item => item.concessionaria);
+      .filter(
+        item =>
+          item.estado.toLowerCase().startsWith(input.toLowerCase()) ||
+          item.cidade.toLowerCase().startsWith(input.toLowerCase()) ||
+          item.concessionaria.toLowerCase().startsWith(input.toLowerCase())
+      )
+      .map(item => item.estado || item.cidade || item.concessionaria);
   
     if (filteredSuggestions.length > 0) {
       suggestionsDiv.style.display = "block";
@@ -229,7 +235,7 @@ function search() {
   // Evento de entrada no campo de texto para exibir sugestões
   document.getElementById("dnInput").addEventListener("input", (event) => {
     const inputValue = event.target.value.trim();
-    suggestConcessionarias(inputValue);
+    suggest(inputValue);
   });
   
   // Esconde as sugestões ao clicar fora do campo de entrada
