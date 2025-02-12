@@ -134,41 +134,108 @@ const data = [
 
 
 // Função para buscar o DN
-function searchDN() {
-    const dnInput = document.getElementById("dnInput").value.trim();
+// Função para buscar o DN ou Concessionária
+function search() {
+    const input = document.getElementById("dnInput").value.trim().toLowerCase();
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = ""; // Limpa resultados anteriores
   
-    if (!dnInput) {
-      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN válido.</p>`;
+    if (!input) {
+      resultDiv.innerHTML = `<p class="error-message">Por favor, digite um DN ou o nome de uma concessionária.</p>`;
       return;
     }
   
-    const found = data.find(item => item.dn === dnInput);
+    // Verifica se a entrada é um número (DN)
+    const isNumeric = !isNaN(input);
   
-    if (found) {
-      resultDiv.innerHTML = `
-        <div class="result-item">
-          <p><strong>Cidade:</strong> ${found.cidade}</p>
-          <p><strong>Estado:</strong> ${found.estado}</p>
-          <p><strong>Concessionária:</strong> ${found.concessionaria}</p>
-          <p><strong>Endereço:</strong> ${found.endereco}</p>
-          <p><strong>CEP:</strong> ${found.cep}</p>
-          <p><strong>Telefone:</strong> ${found.telefone}</p>
-          <p><strong>Email:</strong> <a href="mailto:${found.email}">${found.email}</a></p>
-        </div>
-      `;
+    let foundItems = [];
+  
+    if (isNumeric) {
+      // Busca pelo DN
+      const found = data.find(item => item.dn === input);
+      if (found) {
+        foundItems.push(found);
+      }
     } else {
-      resultDiv.innerHTML = `<p class="error-message">Nenhum resultado encontrado para o DN informado.</p>`;
+      // Busca pela concessionária (case-insensitive)
+      foundItems = data.filter(item =>
+        item.concessionaria.toLowerCase().includes(input)
+      );
+    }
+  
+    if (foundItems.length > 0) {
+      // Exibe os resultados encontrados
+      foundItems.forEach(found => {
+        resultDiv.innerHTML += `
+          <div class="result-item">
+            <p><strong>Cidade:</strong> ${found.cidade}</p>
+            <p><strong>Estado:</strong> ${found.estado}</p>
+            <p><strong>Concessionária:</strong> ${found.concessionaria}</p>
+            <p><strong>Endereço:</strong> ${found.endereco}</p>
+            <p><strong>CEP:</strong> ${found.cep}</p>
+            <p><strong>Telefone:</strong> ${found.telefone}</p>
+            <p><strong>Email:</strong> <a href="mailto:${found.email}">${found.email}</a></p>
+          </div>
+        `;
+      });
+    } else {
+      // Nenhum resultado encontrado
+      resultDiv.innerHTML = `<p class="error-message">Nenhum resultado encontrado para "${input}".</p>`;
+    }
+  }
+  
+  // Função para sugerir nomes de concessionárias enquanto o usuário digita
+  function suggestConcessionarias(input) {
+    const suggestionsDiv = document.getElementById("suggestions");
+    suggestionsDiv.innerHTML = ""; // Limpa sugestões anteriores
+  
+    if (!input) {
+      suggestionsDiv.style.display = "none";
+      return;
+    }
+  
+    const filteredSuggestions = data
+      .filter(item => item.concessionaria.toLowerCase().startsWith(input.toLowerCase()))
+      .map(item => item.concessionaria);
+  
+    if (filteredSuggestions.length > 0) {
+      suggestionsDiv.style.display = "block";
+      filteredSuggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.className = "suggestion-item";
+        suggestionItem.textContent = suggestion;
+        suggestionItem.onclick = () => {
+          document.getElementById("dnInput").value = suggestion;
+          suggestionsDiv.style.display = "none";
+          search();
+        };
+        suggestionsDiv.appendChild(suggestionItem);
+      });
+    } else {
+      suggestionsDiv.style.display = "none";
     }
   }
   
   // Evento de clique no botão "Buscar"
-  document.getElementById("searchButton").addEventListener("click", searchDN);
+  document.getElementById("searchButton").addEventListener("click", search);
   
   // Evento de pressionar "Enter" no campo de entrada
   document.getElementById("dnInput").addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
-      searchDN();
+      search();
+    }
+  });
+  
+  // Evento de entrada no campo de texto para exibir sugestões
+  document.getElementById("dnInput").addEventListener("input", (event) => {
+    const inputValue = event.target.value.trim();
+    suggestConcessionarias(inputValue);
+  });
+  
+  // Esconde as sugestões ao clicar fora do campo de entrada
+  document.addEventListener("click", (event) => {
+    const suggestionsDiv = document.getElementById("suggestions");
+    if (!event.target.closest("#dnInput")) {
+      suggestionsDiv.style.display = "none";
     }
   });

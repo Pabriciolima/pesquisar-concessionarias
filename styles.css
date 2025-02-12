@@ -15,7 +15,6 @@ header {
   text-align: center;
   padding: 20px 10px;
 }
-
 header h1 {
   margin: 0;
   font-size: 2rem;
@@ -37,7 +36,6 @@ main {
   gap: 10px;
   margin-bottom: 20px;
 }
-
 #dnInput {
   flex: 1;
   padding: 10px;
@@ -47,11 +45,9 @@ main {
   outline: none;
   transition: border-color 0.3s ease;
 }
-
 #dnInput:focus {
   border-color: #007BFF;
 }
-
 #searchButton {
   padding: 10px 20px;
   font-size: 1rem;
@@ -62,16 +58,33 @@ main {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 #searchButton:hover {
   background-color: #0056b3;
+}
+
+/* Sugestões */
+#suggestions {
+  display: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.suggestion-item:hover {
+  background-color: #f1f8ff;
 }
 
 /* Resultados */
 #result {
   margin-top: 20px;
 }
-
 .result-item {
   background-color: #f1f8ff;
   border: 1px solid #cce5ff;
@@ -80,12 +93,10 @@ main {
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
-
 .result-item p {
   margin: 5px 0;
   font-size: 0.95rem;
 }
-
 .result-item strong {
   color: #007BFF;
 }
@@ -108,7 +119,6 @@ footer {
   width: 100%;
   margin-top: 20px;
 }
-
 footer p {
   margin: 0;
   font-size: 0.9rem;
