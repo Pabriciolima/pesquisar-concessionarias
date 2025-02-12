@@ -48,7 +48,9 @@ header {
   color: var(--header-text);
   text-align: center;
   padding: 20px 10px;
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
+
 header h1 {
   margin: 0;
   font-size: 2rem;
@@ -61,7 +63,7 @@ main {
   padding: 20px;
   background: var(--main-bg);
   border-radius: 8px;
-  box-shadow: 0 10px 6px var(--shadow-color);
+  box-shadow: 0 4px 8px var(--shadow-color);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -70,57 +72,55 @@ main {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 #searchInput {
-  flex: 1; /* Ocupa todo o espaço disponível */
-  padding: 15px; /* Aumenta o espaçamento interno */
-  font-size: 1.2rem; /* Tamanho maior da fonte */
-  border: 2px solid var(--border-color); /* Borda mais visível */
-  border-radius: 50px; /* Bordas arredondadas */
-  outline: none; /* Remove o contorno padrão ao focar */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
-  width: 100%; /* Largura total */
-  max-width: 600px; /* Largura máxima */
-  background-color: var(--main-bg); /* Cor de fundo dinâmica */
-  color: var(--text-color); /* Cor do texto dinâmica */
-}
-/* Estilo do botão de busca */
-#searchButton {
-  padding: 12px 20px; /* Espaçamento interno maior */
-  font-size: 1rem; /* Tamanho da fonte adequado */
-  color: white; /* Cor do texto */
-  background-color: var(--button-bg); /* Cor de fundo dinâmica */
-  border: none; /* Sem borda */
-  border-radius: 8px; /* Bordas arredondadas */
-  cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  flex: 1;
+  padding: 15px;
+  font-size: 1.2rem;
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--main-bg);
+  color: var(--text-color);
 }
 
-/* Efeito ao passar o mouse */
-#searchButton:hover {
-  background-color: var(--button-hover); /* Altera a cor ao passar o mouse */
-  transform: scale(1.05); /* Aumenta ligeiramente o tamanho */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada */
-}
-
-/* Efeito ao clicar no botão */
-#searchButton:active {
-  transform: scale(0.98); /* Diminui ligeiramente o tamanho ao clicar */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra reduzida */
-}
-
-/* Efeito ao focar no campo */
 #searchInput:focus {
-  border-color: var(--button-bg); /* Altera a cor da borda ao focar */
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Sombra suave ao focar */
+  border-color: var(--button-bg);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
-/* Placeholder estilizado */
 #searchInput::placeholder {
-  color: var(--text-color); /* Cor do placeholder */
-  opacity: 0.7; /* Opacidade reduzida */
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* Botão de busca */
+#searchButton {
+  padding: 12px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#searchButton:hover {
+  background-color: var(--button-hover);
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+#searchButton:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Sugestões */
@@ -132,12 +132,19 @@ main {
   max-height: 150px;
   overflow-y: auto;
   margin-top: 5px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
+
 .suggestion-item {
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 .suggestion-item:hover {
   background-color: var(--suggestion-hover);
 }
@@ -146,6 +153,7 @@ main {
 #result {
   margin-top: 20px;
 }
+
 .result-item {
   background-color: var(--result-bg);
   border: 1px solid var(--border-color);
@@ -154,10 +162,12 @@ main {
   margin-bottom: 10px;
   box-shadow: 0 2px 4px var(--shadow-color);
 }
+
 .result-item p {
   margin: 5px 0;
   font-size: 0.95rem;
 }
+
 .result-item strong {
   color: var(--button-bg);
 }
@@ -179,7 +189,9 @@ footer {
   bottom: 0;
   width: 100%;
   margin-top: 20px;
+  box-shadow: 0 -4px 6px var(--shadow-color);
 }
+
 footer p {
   margin: 0;
   font-size: 0.9rem;
@@ -188,34 +200,58 @@ footer p {
 /* Botão de alternância de tema */
 .theme-toggle {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: 20px;
+  right: 20px;
   padding: 10px;
-  font-size: 1.5rem; /* Tamanho maior para os ícones */
+  font-size: 1.5rem;
   color: white;
   background-color: var(--button-bg);
   border: none;
-  border-radius: 50%; /* Formato circular */
+  border-radius: 50%;
   cursor: pointer;
-  width: 50px; /* Tamanho fixo do botão */
+  width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 20;
 }
 
 .theme-toggle:hover {
   background-color: var(--button-hover);
-  transform: scale(1.1); /* Efeito de ampliação ao passar o mouse */
+  transform: scale(1.1);
 }
 
-/* Ícone de sol */
 .theme-toggle.light-mode::before {
-  content: "☀️"; /* Emoji de sol */
+  content: "☀️";
 }
 
-/* Ícone de lua */
 .theme-toggle.dark-mode::before {
-  content: "🌙"; /* Emoji de lua */
+  content: "🌙";
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .search-container {
+    flex-direction: column;
+  }
+
+  #searchInput {
+    max-width: 100%;
+  }
+
+  #searchButton {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  footer {
+    font-size: 0.8rem;
+  }
 }
