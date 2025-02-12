@@ -1,17 +1,51 @@
+/* Variáveis de cores */
+:root {
+  --bg-color: #f9f9f9;
+  --text-color: #333;
+  --header-bg: #007BFF;
+  --header-text: white;
+  --main-bg: white;
+  --border-color: #ccc;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --button-bg: #007BFF;
+  --button-hover: #0056b3;
+  --suggestion-bg: white;
+  --suggestion-hover: #f1f8ff;
+  --result-bg: #f1f8ff;
+  --error-color: #dc3545;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --header-bg: #121212;
+  --header-text: #ffffff;
+  --main-bg: #121212;
+  --border-color: #333;
+  --shadow-color: rgba(255, 255, 255, 0.1);
+  --button-bg: #bb86fc;
+  --button-hover: #9c27b0;
+  --suggestion-bg: #121212;
+  --suggestion-hover: #333;
+  --result-bg: #333;
+  --error-color: #cf6679;
+}
+
 /* Estilo global */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Cabeçalho */
 header {
-  background-color: #007BFF;
-  color: white;
+  background-color: var(--header-bg);
+  color: var(--header-text);
   text-align: center;
   padding: 20px 10px;
 }
@@ -25,9 +59,10 @@ main {
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  background: white;
+  background: var(--main-bg);
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Campo de busca */
@@ -36,38 +71,64 @@ main {
   gap: 10px;
   margin-bottom: 20px;
 }
-#dnInput {
-  flex: 1;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  outline: none;
-  transition: border-color 0.3s ease;
+
+#searchInput {
+  flex: 1; /* Ocupa todo o espaço disponível */
+  padding: 15px; /* Aumenta o espaçamento interno */
+  font-size: 1.2rem; /* Tamanho maior da fonte */
+  border: 2px solid var(--border-color); /* Borda mais visível */
+  border-radius: 50px; /* Bordas arredondadas */
+  outline: none; /* Remove o contorno padrão ao focar */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
+  width: 100%; /* Largura total */
+  max-width: 600px; /* Largura máxima */
+  background-color: var(--main-bg); /* Cor de fundo dinâmica */
+  color: var(--text-color); /* Cor do texto dinâmica */
 }
-#dnInput:focus {
-  border-color: #007BFF;
-}
+/* Estilo do botão de busca */
 #searchButton {
-  padding: 10px 20px;
-  font-size: 1rem;
-  color: white;
-  background-color: #007BFF;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 12px 20px; /* Espaçamento interno maior */
+  font-size: 1rem; /* Tamanho da fonte adequado */
+  color: white; /* Cor do texto */
+  background-color: var(--button-bg); /* Cor de fundo dinâmica */
+  border: none; /* Sem borda */
+  border-radius: 8px; /* Bordas arredondadas */
+  cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
+
+/* Efeito ao passar o mouse */
 #searchButton:hover {
-  background-color: #0056b3;
+  background-color: var(--button-hover); /* Altera a cor ao passar o mouse */
+  transform: scale(1.05); /* Aumenta ligeiramente o tamanho */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada */
+}
+
+/* Efeito ao clicar no botão */
+#searchButton:active {
+  transform: scale(0.98); /* Diminui ligeiramente o tamanho ao clicar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra reduzida */
+}
+
+/* Efeito ao focar no campo */
+#searchInput:focus {
+  border-color: var(--button-bg); /* Altera a cor da borda ao focar */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Sombra suave ao focar */
+}
+
+/* Placeholder estilizado */
+#searchInput::placeholder {
+  color: var(--text-color); /* Cor do placeholder */
+  opacity: 0.7; /* Opacidade reduzida */
 }
 
 /* Sugestões */
 #suggestions {
   display: none;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
-  background-color: white;
+  background-color: var(--suggestion-bg);
   max-height: 150px;
   overflow-y: auto;
   margin-top: 5px;
@@ -78,7 +139,7 @@ main {
   transition: background-color 0.3s ease;
 }
 .suggestion-item:hover {
-  background-color: #f1f8ff;
+  background-color: var(--suggestion-hover);
 }
 
 /* Resultados */
@@ -86,32 +147,32 @@ main {
   margin-top: 20px;
 }
 .result-item {
-  background-color: #f1f8ff;
-  border: 1px solid #cce5ff;
+  background-color: var(--result-bg);
+  border: 1px solid var(--border-color);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 .result-item p {
   margin: 5px 0;
   font-size: 0.95rem;
 }
 .result-item strong {
-  color: #007BFF;
+  color: var(--button-bg);
 }
 
 /* Mensagem de erro */
 .error-message {
-  color: #dc3545;
+  color: var(--error-color);
   font-weight: bold;
   text-align: center;
 }
 
 /* Rodapé */
 footer {
-  background-color: #007BFF;
-  color: white;
+  background-color: var(--header-bg);
+  color: var(--header-text);
   text-align: center;
   padding: 10px 0;
   position: relative;
@@ -122,4 +183,39 @@ footer {
 footer p {
   margin: 0;
   font-size: 0.9rem;
+}
+
+/* Botão de alternância de tema */
+.theme-toggle {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px;
+  font-size: 1.5rem; /* Tamanho maior para os ícones */
+  color: white;
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 50%; /* Formato circular */
+  cursor: pointer;
+  width: 50px; /* Tamanho fixo do botão */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--button-hover);
+  transform: scale(1.1); /* Efeito de ampliação ao passar o mouse */
+}
+
+/* Ícone de sol */
+.theme-toggle.light-mode::before {
+  content: "☀️"; /* Emoji de sol */
+}
+
+/* Ícone de lua */
+.theme-toggle.dark-mode::before {
+  content: "🌙"; /* Emoji de lua */
 }

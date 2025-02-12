@@ -274,3 +274,44 @@ const data = [
       suggestionsDiv.style.display = "none";
     }
   });
+ // Função para alternar o tema
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+  
+    // Salvar preferência do usuário no localStorage
+    localStorage.setItem("theme", newTheme);
+  
+    // Atualizar o ícone do botão
+    updateThemeButton();
+  }
+  
+  // Função para atualizar o ícone do botão de acordo com o tema atual
+  function updateThemeButton() {
+    const themeToggle = document.querySelector(".theme-toggle");
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+  
+    if (currentTheme === "dark") {
+      themeToggle.classList.remove("light-mode");
+      themeToggle.classList.add("dark-mode");
+    } else {
+      themeToggle.classList.remove("dark-mode");
+      themeToggle.classList.add("light-mode");
+    }
+  }
+  
+  // Verificar preferência salva no localStorage
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  
+    // Atualizar o ícone do botão ao carregar a página
+    updateThemeButton();
+  
+    // Adicionar evento ao botão de alternância
+    const themeToggle = document.querySelector(".theme-toggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", toggleTheme);
+    }
+  });
